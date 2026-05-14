@@ -34,16 +34,42 @@ if (isset($_POST['name']) && isset($_POST['pwd'])) {
     <style>
       /* Modern Login Page Styles - Reference Design */
       .login-page {
-        background: var(--light-bg);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
         min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
+        position: relative;
+      }
+      
+      /* Animated background pattern */
+      .login-page::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+          radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+          radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+          radial-gradient(circle at 40% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+        animation: backgroundMove 20s ease-in-out infinite;
+      }
+      
+      @keyframes backgroundMove {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.8; }
       }
       
       .login-box {
         width: 400px;
         margin: 0 auto;
+        position: relative;
+        z-index: 1;
       }
       
       .login-logo {
@@ -52,54 +78,64 @@ if (isset($_POST['name']) && isset($_POST['pwd'])) {
       }
       
       .login-logo a {
-        color: var(--sidebar-dark);
+        color: white;
         font-size: 28px;
         font-weight: 700;
         text-decoration: none;
         letter-spacing: -0.5px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      }
+      
+      .logo-circle {
+        animation: logoFloat 3s ease-in-out infinite;
+      }
+      
+      @keyframes logoFloat {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
       }
       
       .login-box-body {
-        background: var(--lighter-bg);
+        background: white;
         padding: 40px;
-        border-radius: var(--border-radius-lg);
-        box-shadow: var(--shadow-lg);
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         border: none;
       }
       
       .login-box-msg {
         text-align: center;
         margin-bottom: 30px;
-        color: var(--text-muted);
+        color: #4a5568;
         font-size: 16px;
         font-weight: 500;
       }
       
       .form-control {
-        border: 1px solid var(--border-gray);
-        border-radius: var(--border-radius-sm);
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
         padding: 15px 20px;
         font-size: 16px;
         transition: all 0.3s ease;
-        background: var(--lighter-bg);
+        background: #f7fafc;
       }
       
       .form-control:focus {
-        border-color: var(--accent-blue);
-        box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
-        background: var(--lighter-bg);
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        background: white;
       }
       
       .form-control-feedback {
         right: 20px;
         top: 15px;
-        color: var(--text-muted);
+        color: #a0aec0;
       }
       
       .btn-primary {
-        background: var(--sidebar-dark);
-        border: 1px solid var(--sidebar-dark);
-        border-radius: var(--border-radius-sm);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 8px;
         padding: 12px 24px;
         font-weight: 600;
         text-transform: uppercase;
@@ -108,14 +144,12 @@ if (isset($_POST['name']) && isset($_POST['pwd'])) {
       }
       
       .btn-primary:hover {
-        background: var(--primary-dark);
-        border-color: var(--primary-dark);
         transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
       }
       
       .alert {
-        border-radius: var(--border-radius-sm);
+        border-radius: 8px;
         border: none;
         padding: 15px 20px;
         margin-bottom: 20px;
@@ -123,8 +157,8 @@ if (isset($_POST['name']) && isset($_POST['pwd'])) {
       
       .alert-danger {
         background: rgba(229, 62, 62, 0.1);
-        color: var(--danger-color);
-        border-left: 4px solid var(--danger-color);
+        color: #c53030;
+        border-left: 4px solid #e53e3e;
       }
       
       .form-group {
@@ -133,19 +167,19 @@ if (isset($_POST['name']) && isset($_POST['pwd'])) {
       
       /* Validation Styles */
       .validation-message {
-        color: var(--danger-color);
+        color: #e53e3e;
         font-size: 12px;
         margin-top: 5px;
         display: block;
       }
       
       .form-control.is-invalid {
-        border-color: var(--danger-color);
+        border-color: #e53e3e;
         box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
       }
       
       .form-control.is-valid {
-        border-color: var(--success-color);
+        border-color: #38a169;
         box-shadow: 0 0 0 3px rgba(56, 161, 105, 0.1);
       }
       
@@ -179,6 +213,15 @@ if (isset($_POST['name']) && isset($_POST['pwd'])) {
         .login-logo a {
           font-size: 24px;
         }
+        
+        .logo-circle {
+          width: 80px !important;
+          height: 80px !important;
+        }
+        
+        .logo-circle i {
+          font-size: 40px !important;
+        }
       }
     </style>
 
@@ -192,7 +235,24 @@ if (isset($_POST['name']) && isset($_POST['pwd'])) {
   <body class="login-page">
     <div class="login-box">
       <div class="login-logo">
-        <a href="#"><i class="fa fa-heartbeat"></i> <?php echo getSystemSetting('clinic_name', 'Veterinary Clinic'); ?></a>
+        <!-- Logo Image -->
+        <div class="logo-container" style="text-align: center; margin-bottom: 20px;">
+          <?php 
+          $logoPath = getSystemSetting('clinic_logo', '');
+          if (!empty($logoPath) && file_exists($logoPath)) {
+          ?>
+          <!-- Custom uploaded logo -->
+          <div style="margin-bottom: 15px;">
+            <img src="<?php echo WEB_ROOT . $logoPath; ?>" alt="<?php echo getSystemSetting('clinic_name', 'Veterinary Clinic'); ?>" style="max-width: 250px; max-height: 120px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));">
+          </div>
+          <?php } else { ?>
+          <!-- Default logo circle -->
+          <div class="logo-circle" style="width: 100px; height: 100px; margin: 0 auto 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);">
+            <i class="fa fa-heartbeat" style="font-size: 50px; color: white;"></i>
+          </div>
+          <?php } ?>
+        </div>
+        <a href="#"><strong><?php echo getSystemSetting('clinic_name', 'Veterinary Clinic'); ?></strong></a>
       </div><!-- /.login-logo -->
       <div class="login-box-body">
         <p class="login-box-msg">Sign in to access the appointment system</p>
@@ -225,8 +285,8 @@ if (isset($_POST['name']) && isset($_POST['pwd'])) {
           </div>
         </form>
 
-        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-gray);">
-          <small style="color: var(--text-muted);">
+        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+          <small style="color: #718096;">
             <i class="fa fa-shield"></i> Secure veterinary appointment management system
           </small>
         </div>

@@ -96,6 +96,15 @@ function get_email_msg($data) {
 					Appointment Type: %s<br/>
 					Status: <span style='color: #ff9800;'>Pending Confirmation</span>
 				</div>
+				
+				<div style='background-color: #fff3cd; padding: 15px; border-left: 4px solid #ff9800; margin: 20px 0; border-radius: 4px;'>
+					<strong style='color: #ff6f00;'>⚠️ Important Attendance Policy:</strong><br/>
+					<p style='margin: 10px 0 0 0; color: #856404;'>
+						<strong>If you do not arrive on your expected schedule, your appointment will be automatically cancelled.</strong>
+						Please ensure you arrive on time for your appointment. No-shows will result in automatic cancellation without prior notice.
+					</p>
+				</div>
+				
 				<p>You will receive another email once your appointment is confirmed by our staff.</p>
 				<p>Best regards,<br/>
 				<strong>%s Team</strong></p>
@@ -117,6 +126,15 @@ function get_email_msg($data) {
 					Appointment Date: %s<br/>
 					Appointment Type: %s
 				</div>
+				
+				<div style='background-color: #fff3cd; padding: 15px; border-left: 4px solid #ff9800; margin: 20px 0; border-radius: 4px;'>
+					<strong style='color: #ff6f00;'>⚠️ Important Attendance Policy:</strong><br/>
+					<p style='margin: 10px 0 0 0; color: #856404;'>
+						<strong>If you do not arrive on your expected schedule, your appointment will be automatically cancelled.</strong>
+						Please ensure you arrive on time. No-shows will result in automatic cancellation without prior notice.
+					</p>
+				</div>
+				
 				<div style='background-color: #e8f5e8; padding: 10px; border-radius: 5px; margin: 20px 0;'>
 					<strong>Important Reminders:</strong>
 					<ul>
@@ -166,6 +184,15 @@ function get_email_msg($data) {
 					Appointment Type: %s<br/>
 					Status: <span style='color: #4caf50;'>Confirmed</span>
 				</div>
+				
+				<div style='background-color: #ffebee; padding: 15px; border-left: 4px solid #e53e3e; margin: 20px 0; border-radius: 4px;'>
+					<strong style='color: #c53030;'>⚠️ CRITICAL: Attendance Policy</strong><br/>
+					<p style='margin: 10px 0 0 0; color: #c53030; font-size: 15px;'>
+						<strong>If you do not arrive on your expected schedule, your appointment will be automatically cancelled.</strong>
+						This is an automated system. Please arrive on time to avoid cancellation.
+					</p>
+				</div>
+				
 				<div style='background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin: 20px 0;'>
 					<strong>📋 Please Remember:</strong>
 					<ul style='margin: 10px 0; padding-left: 20px;'>
@@ -228,6 +255,53 @@ function get_email_msg($data) {
 			</html>", 
 				$data['name'], $data['pet_name'], $data['appointment_date'], $data['appointment_type'], 
 				isset($data['cancelled_by']) ? $data['cancelled_by'] : 'You', $data['reason'], $clinic_name, $clinic_name);
+		break;
+		
+		case 'appointment_auto_cancelled':
+			$msg_text = sprintf("
+			<html>
+			<head><title>Appointment Auto-Cancelled - No Show</title></head>
+			<body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>
+				<div style='max-width: 600px; margin: 0 auto; padding: 20px; background: #f9f9f9;'>
+					<div style='background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);'>
+						<h2 style='color: #ff6f00; text-align: center; margin-bottom: 30px;'>⚠️ Appointment Automatically Cancelled</h2>
+						<p>Dear <strong>%s</strong>,</p>
+						<p>Your appointment has been automatically cancelled because you did not arrive at your scheduled time.</p>
+						
+						<div style='background: #fff3e0; padding: 20px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #ff9800;'>
+							<h3 style='color: #e65100; margin-top: 0;'>📋 Cancelled Appointment Details</h3>
+							<p><strong>Pet Name:</strong> %s</p>
+							<p><strong>Scheduled Date & Time:</strong> %s</p>
+							<p><strong>Service:</strong> %s</p>
+							<p><strong>Cancellation Reason:</strong> No-show (did not arrive at scheduled time)</p>
+						</div>
+						
+						<div style='background: #ffebee; padding: 15px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #e53e3e;'>
+							<strong>⚠️ Important Reminder</strong><br/>
+							As stated in our booking policy: <strong>If you do not arrive on your expected schedule, your appointment will be automatically cancelled.</strong>
+							This helps us serve other clients who are waiting for appointments.
+						</div>
+						
+						<div style='background: #e8f5e9; padding: 15px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #4caf50;'>
+							<strong>💚 We Still Care About Your Pet</strong><br/>
+							We understand that emergencies happen. If you missed your appointment due to unforeseen circumstances, 
+							please contact us to explain the situation. We're here to help!
+						</div>
+						
+						<div style='text-align: center; margin: 30px 0; padding: 20px; background: #f7fafc; border-radius: 6px;'>
+							<strong>📞 Want to reschedule?</strong><br/>
+							Contact us or visit our website to book a new appointment.<br/>
+							<small style='color: #718096;'>Please arrive on time for future appointments to avoid automatic cancellation.</small>
+						</div>
+						
+						<p>Thank you for your understanding.</p>
+						<p>Best regards,<br/>
+						<strong>%s Team</strong></p>
+					</div>
+				</div>
+			</body>
+			</html>", 
+				$data['name'], $data['pet_name'], $data['appointment_date'], $data['appointment_type'], $clinic_name);
 		break;
 		
 		case 'register':

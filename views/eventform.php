@@ -1,5 +1,14 @@
 <!-- Modern Veterinary Appointment Booking Form -->
 
+<!-- No-Show Warning Alert -->
+<div class="alert alert-warning" style="background: #fff3cd; border-left: 4px solid #ff9800; padding: 15px; margin-bottom: 20px; border-radius: 6px;">
+  <h4 style="margin-top: 0; color: #ff6f00;"><i class="fa fa-exclamation-triangle"></i> Important Notice</h4>
+  <p style="margin-bottom: 0; font-size: 14px; line-height: 1.6;">
+    <strong>If you do not arrive on your expected schedule, your appointment will be automatically cancelled.</strong>
+    Please ensure you arrive on time for your appointment. Late arrivals may result in automatic cancellation without prior notice.
+  </p>
+</div>
+
 <div class="box box-primary booking-form">
   <div class="box-header with-border">
     <h3 class="box-title"><b>Book Veterinary Appointment</b></h3>
@@ -80,12 +89,6 @@
           <option value="">--select pet type--</option>
           <option value="Dog">Dog</option>
           <option value="Cat">Cat</option>
-          <option value="Bird">Bird</option>
-          <option value="Rabbit">Rabbit</option>
-          <option value="Hamster">Hamster</option>
-          <option value="Fish">Fish</option>
-          <option value="Reptile">Reptile</option>
-          <option value="Other">Other</option>
         </select>
         <div class="validation-message" id="petTypeError" style="display: none; color: #e74c3c; font-size: 12px; margin-top: 5px;">
           Pet type is required.
@@ -95,6 +98,26 @@
       <div class="form-group">
         <label for="pet_breed">Pet Breed (Optional)</label>
         <input type="text" name="pet_breed" class="form-control" placeholder="Enter pet's breed (optional)" id="pet_breed">
+      </div>
+
+      <div class="form-group">
+        <label for="pet_gender">Pet Gender *</label>
+        <select name="pet_gender" class="form-control" id="pet_gender" required>
+          <option value="">--select gender--</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+        <div class="validation-message" id="petGenderError" style="display: none; color: #e74c3c; font-size: 12px; margin-top: 5px;">
+          Pet gender is required.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="pet_age">Pet Age (years) *</label>
+        <input type="number" name="pet_age" class="form-control" placeholder="Enter pet's age in years" id="pet_age" required min="0" max="50" step="1">
+        <div class="validation-message" id="petAgeError" style="display: none; color: #e74c3c; font-size: 12px; margin-top: 5px;">
+          Pet age is required (0-50 years).
+        </div>
       </div>
 
       <div class="form-group">
@@ -341,6 +364,7 @@ $(document).ready(function() {
         // Validate select fields
         var selectFields = [
             { field: '#pet_type', error: 'petTypeError' },
+            { field: '#pet_gender', error: 'petGenderError' },
             { field: '#appointment_type', error: 'appointmentTypeError' }
         ];
         
@@ -353,6 +377,16 @@ $(document).ready(function() {
                 markFieldValid($field);
             }
         });
+        
+        // Validate pet age
+        var $petAge = $('#pet_age');
+        var petAge = parseInt($petAge.val());
+        if (!$petAge.val() || isNaN(petAge) || petAge < 0 || petAge > 50) {
+            markFieldInvalid($petAge, 'petAgeError');
+            isValid = false;
+        } else {
+            markFieldValid($petAge);
+        }
         
         // Validate date and time
         var $date = $('#rdate');
