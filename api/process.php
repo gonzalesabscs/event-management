@@ -419,10 +419,6 @@ function sendAppointmentReminder() {
 	}
 	exit();
 }
-		header('Location: ../views/?v=LIST&err=' . urlencode($error));
-	}
-	exit();
-}
 
 function updateAppointment() {
 	$appointmentId = (int)$_POST['appointmentId'];
@@ -691,8 +687,6 @@ function cancelAppointment() {
 	));
 	exit();
 }
-
-?>
 
 function autoCheckNoShows() {
 	// This function checks for appointments that are past their scheduled time
