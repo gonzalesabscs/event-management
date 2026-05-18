@@ -3,20 +3,20 @@
 // Modify these settings according to your environment
 
 // Email settings
-define('EMAIL_FROM_ADDRESS', 'appointments@vetclinic.com');
+define('EMAIL_FROM_ADDRESS', 'gonzales.a.bscs@gmail.com');
 define('EMAIL_FROM_NAME', 'Veterinary Clinic');
-define('EMAIL_REPLY_TO', 'appointments@vetclinic.com');
+define('EMAIL_REPLY_TO', 'gonzales.a.bscs@gmail.com');
 
 // SMTP Settings (if using SMTP instead of PHP mail())
 define('USE_SMTP', false); // Set to true to use SMTP instead of PHP mail()
 define('SMTP_HOST', 'smtp.gmail.com');
 define('SMTP_PORT', 587);
-define('SMTP_USERNAME', 'your-email@gmail.com');
-define('SMTP_PASSWORD', 'your-app-password');
+define('SMTP_USERNAME', 'gonzales.a.bscs@gmail.com');
+define('SMTP_PASSWORD', 'zmepsaymhlqcuoji');
 define('SMTP_ENCRYPTION', 'tls'); // 'tls' or 'ssl'
 
 // Email debugging
-define('EMAIL_DEBUG', true); // Set to false in production
+define('EMAIL_DEBUG', false); // Set to false in production
 
 // Function to check if email is properly configured
 function is_email_configured() {

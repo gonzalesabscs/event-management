@@ -30,3 +30,6 @@ Current SMTP Port: 587
 Sendmail From: chua.j.d.bscs@gmail.com
 Sendmail Path: "C:\xampp\sendmail\sendmail.exe" -t
 -------------------
+2026-03-23 09:40:54 | To: gonzales.a.bscs@gmail.com | Subject: Veterinary Appointment Confirmation - Pending | mail() OK
+2026-03-23 10:38:23 | To: gonzales.a.bscs@gmail.com | Subject: Veterinary Appointment Confirmation - Pending | mail() OK
+2026-03-23 10:38:54 | To: gonzales.a.bscs@gmail.com | Subject: Veterinary Appointment CONFIRMED | mail() OK
