@@ -18,8 +18,46 @@ $settings = getSystemSettings();
       </div>
       <!-- /.box-header -->
       <!-- form start -->
-      <form class="form-horizontal" action="<?php echo WEB_ROOT; ?>views/process.php?cmd=updatesettings" method="post">
+      <form class="form-horizontal" action="<?php echo WEB_ROOT; ?>views/process.php?cmd=updatesettings" method="post" enctype="multipart/form-data">
         <div class="box-body">
+          
+          <!-- Logo Upload Section -->
+          <div class="form-group">
+            <label for="clinic_logo" class="col-sm-3 control-label">Clinic Logo</label>
+            <div class="col-sm-9">
+              <?php 
+              $currentLogo = isset($settings['clinic_logo']) && !empty($settings['clinic_logo']) ? $settings['clinic_logo'] : '';
+              if ($currentLogo && file_exists('../' . $currentLogo)) {
+              ?>
+              <div class="current-logo-preview" style="margin-bottom: 15px; padding: 15px; background: #f9f9f9; border-radius: 8px; text-align: center;">
+                <p style="margin-bottom: 10px; font-weight: bold; color: #555;">Current Logo:</p>
+                <img src="<?php echo WEB_ROOT . $currentLogo; ?>" alt="Current Logo" style="max-width: 200px; max-height: 100px; border: 2px solid #ddd; border-radius: 4px; padding: 5px; background: white;">
+                <div style="margin-top: 10px;">
+                  <label class="checkbox-inline">
+                    <input type="checkbox" name="remove_logo" value="1"> Remove current logo
+                  </label>
+                </div>
+              </div>
+              <?php } else { ?>
+              <div class="alert alert-info" style="margin-bottom: 15px;">
+                <i class="fa fa-info-circle"></i> No logo uploaded yet. Upload one below.
+              </div>
+              <?php } ?>
+              
+              <input type="file" name="clinic_logo" id="clinic_logo" accept="image/png,image/jpeg,image/jpg,image/gif" class="form-control">
+              <p class="help-block">
+                <i class="fa fa-upload"></i> Upload your clinic logo (PNG, JPG, GIF). Max size: 2MB. Recommended: 300x100px or similar ratio.
+              </p>
+              
+              <!-- Preview area for new upload -->
+              <div id="logo-preview" style="display: none; margin-top: 15px; padding: 15px; background: #f0f8ff; border-radius: 8px; text-align: center;">
+                <p style="margin-bottom: 10px; font-weight: bold; color: #555;">Preview:</p>
+                <img id="logo-preview-img" src="" alt="Logo Preview" style="max-width: 200px; max-height: 100px; border: 2px solid #3498db; border-radius: 4px; padding: 5px; background: white;">
+              </div>
+            </div>
+          </div>
+          
+          <hr style="margin: 30px 0; border-top: 2px solid #eee;">
           
           <div class="form-group">
             <label for="clinic_name" class="col-sm-3 control-label">Clinic Name</label>
@@ -129,6 +167,16 @@ $settings = getSystemSettings();
         <h3 class="box-title"><i class="fa fa-info-circle"></i> Settings Information</h3>
       </div>
       <div class="box-body">
+        <h4>Clinic Logo</h4>
+        <p>Your logo will appear in:</p>
+        <ul>
+          <li>Login page</li>
+          <li>System header (if configured)</li>
+          <li>Email notifications (future)</li>
+          <li>Printed documents (future)</li>
+        </ul>
+        <p><small><strong>Tip:</strong> Use a transparent PNG for best results.</small></p>
+        
         <h4>Clinic Name</h4>
         <p>This name will appear in:</p>
         <ul>
@@ -170,3 +218,51 @@ $settings = getSystemSettings();
     </div>
   </div>
 </div>
+
+<script>
+// Logo preview functionality
+document.getElementById('clinic_logo').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const previewDiv = document.getElementById('logo-preview');
+    const previewImg = document.getElementById('logo-preview-img');
+    
+    if (file) {
+        // Validate file type
+        const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
+        if (!validTypes.includes(file.type)) {
+            alert('Please upload a valid image file (PNG, JPG, or GIF).');
+            e.target.value = '';
+            previewDiv.style.display = 'none';
+            return;
+        }
+        
+        // Validate file size (2MB max)
+        const maxSize = 2 * 1024 * 1024; // 2MB in bytes
+        if (file.size > maxSize) {
+            alert('File size must be less than 2MB. Your file is ' + (file.size / 1024 / 1024).toFixed(2) + 'MB.');
+            e.target.value = '';
+            previewDiv.style.display = 'none';
+            return;
+        }
+        
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            previewImg.src = event.target.result;
+            previewDiv.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    } else {
+        previewDiv.style.display = 'none';
+    }
+});
+
+// Warn if trying to remove logo
+document.querySelector('input[name="remove_logo"]')?.addEventListener('change', function(e) {
+    if (e.target.checked) {
+        if (!confirm('Are you sure you want to remove the current logo? This action cannot be undone.')) {
+            e.target.checked = false;
+        }
+    }
+});
+</script>

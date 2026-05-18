@@ -21,6 +21,17 @@ while($row = dbFetchAssoc($result)) {
 }
 ?>
 
+<!-- No-Show Warning Alert -->
+<div class="col-md-12">
+  <div class="alert alert-warning" style="background: #fff3cd; border-left: 4px solid #ff9800; padding: 15px; margin-bottom: 20px; border-radius: 6px;">
+    <h4 style="margin-top: 0; color: #ff6f00;"><i class="fa fa-exclamation-triangle"></i> Important Attendance Policy</h4>
+    <p style="margin-bottom: 0; font-size: 14px; line-height: 1.6;">
+      <strong>If you do not arrive on your expected schedule, your appointment will be automatically cancelled.</strong>
+      Please ensure you arrive on time for your appointments. No-shows will result in automatic cancellation without prior notice.
+    </p>
+  </div>
+</div>
+
 <div class="col-md-12">
   <div class="box">
     <div class="box-header with-border">
@@ -70,10 +81,15 @@ while($row = dbFetchAssoc($result)) {
                     $hoursSinceApproval = ($currentTime - $approvedTime) / 3600;
                     $canCancel = ($hoursSinceApproval <= 24);
                 }
+            } else if ($status == "ARRIVED") {
+                $stat = 'info';
+                $canCancel = false; // Cannot cancel if already arrived
             } else if($status == "DENIED") {
                 $stat = 'danger';
             } else if($status == "CANCELLED") {
                 $stat = 'default';
+            } else if($status == "AUTO CANCELLED") {
+                $stat = 'danger';
             }
             
             // Format dates
@@ -93,7 +109,7 @@ while($row = dbFetchAssoc($result)) {
           <td><?php echo $bookedDateTime; ?></td>
           <td>
             <div class="client-appointment-actions">
-              <?php if ($canCancel && !$isPastAppointment && $status !== 'CANCELLED') { ?>
+              <?php if ($canCancel && !$isPastAppointment && $status !== 'CANCELLED' && $status !== 'AUTO CANCELLED') { ?>
                 <button onclick="cancelAppointment(<?php echo $id; ?>, '<?php echo htmlspecialchars($pet_name); ?>')" 
                         class="btn btn-danger btn-xs" title="Cancel this appointment">
                   <i class="fa fa-times"></i> Cancel
@@ -150,6 +166,16 @@ while($row = dbFetchAssoc($result)) {
                   <?php if ($cancellation_reason) { ?>
                     <br>Reason: <?php echo htmlspecialchars($cancellation_reason); ?>
                   <?php } ?>
+                </small>
+              </div>
+            <?php } ?>
+            
+            <?php if ($status == 'AUTO CANCELLED' && $auto_cancelled_date) { ?>
+              <div class="cancellation-info" style="background: #ffebee; padding: 8px; border-radius: 4px; margin-top: 8px;">
+                <small class="text-danger">
+                  <i class="fa fa-exclamation-triangle"></i> 
+                  <strong>Auto-cancelled on <?php echo date('M j, Y g:i A', strtotime($auto_cancelled_date)); ?></strong>
+                  <br>Reason: No-show (did not arrive at scheduled time)
                 </small>
               </div>
             <?php } ?>

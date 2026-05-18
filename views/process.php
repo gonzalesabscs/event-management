@@ -170,8 +170,88 @@ function updateSettings() {
 		'email_notifications' => isset($_POST['email_notifications']) ? '1' : '0'
 	);
 	
+	// Handle logo upload
+	$logoUploadError = '';
+	$logoPath = '';
+	
+	// Check if user wants to remove the logo
+	if (isset($_POST['remove_logo']) && $_POST['remove_logo'] == '1') {
+		// Get current logo path
+		$currentSettings = getSystemSettings();
+		$currentLogo = isset($currentSettings['clinic_logo']) ? $currentSettings['clinic_logo'] : '';
+		
+		// Delete the old logo file if it exists
+		if (!empty($currentLogo) && file_exists('../' . $currentLogo)) {
+			unlink('../' . $currentLogo);
+		}
+		
+		// Set logo to empty
+		$settingsData['clinic_logo'] = '';
+	}
+	// Check if a new logo file was uploaded
+	else if (isset($_FILES['clinic_logo']) && $_FILES['clinic_logo']['error'] == UPLOAD_ERR_OK) {
+		$file = $_FILES['clinic_logo'];
+		
+		// Validate file type
+		$allowedTypes = array('image/png', 'image/jpeg', 'image/jpg', 'image/gif');
+		$fileType = $file['type'];
+		
+		if (!in_array($fileType, $allowedTypes)) {
+			$logoUploadError = 'Invalid file type. Only PNG, JPG, and GIF images are allowed.';
+		}
+		// Validate file size (2MB max)
+		else if ($file['size'] > 2 * 1024 * 1024) {
+			$logoUploadError = 'File size too large. Maximum size is 2MB.';
+		}
+		else {
+			// Create uploads directory if it doesn't exist
+			$uploadDir = '../uploads/logo/';
+			if (!file_exists($uploadDir)) {
+				mkdir($uploadDir, 0755, true);
+			}
+			
+			// Generate unique filename
+			$fileExtension = pathinfo($file['name'], PATHINFO_EXTENSION);
+			$fileName = 'clinic_logo_' . time() . '.' . $fileExtension;
+			$targetPath = $uploadDir . $fileName;
+			
+			// Move uploaded file
+			if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+				// Delete old logo if exists
+				$currentSettings = getSystemSettings();
+				$oldLogo = isset($currentSettings['clinic_logo']) ? $currentSettings['clinic_logo'] : '';
+				if (!empty($oldLogo) && file_exists('../' . $oldLogo)) {
+					unlink('../' . $oldLogo);
+				}
+				
+				// Save relative path (without leading ../)
+				$logoPath = 'uploads/logo/' . $fileName;
+				$settingsData['clinic_logo'] = $logoPath;
+			} else {
+				$logoUploadError = 'Failed to upload logo. Please check directory permissions.';
+			}
+		}
+	}
+	// No new upload, keep existing logo
+	else {
+		$currentSettings = getSystemSettings();
+		if (isset($currentSettings['clinic_logo'])) {
+			$settingsData['clinic_logo'] = $currentSettings['clinic_logo'];
+		}
+	}
+	
+	// Show error if logo upload failed
+	if (!empty($logoUploadError)) {
+		header('Location: ../views/?v=SETTINGS&err=' . urlencode($logoUploadError));
+		exit();
+	}
+	
 	if (updateSystemSettings($settingsData)) {
-		header('Location: ../views/?v=SETTINGS&msg=' . urlencode('System settings updated successfully.'));
+		$message = 'System settings updated successfully.';
+		if (!empty($logoPath)) {
+			$message .= ' Logo uploaded successfully.';
+		}
+		header('Location: ../views/?v=SETTINGS&msg=' . urlencode($message));
 	} else {
 		header('Location: ../views/?v=SETTINGS&err=' . urlencode('Failed to update system settings. Please try again.'));
 	}

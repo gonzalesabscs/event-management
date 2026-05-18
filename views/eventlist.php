@@ -37,7 +37,10 @@ if($type == 'admin') {
 		$stat = '';
 		if($status == "PENDING") {$stat = 'warning';}
 		else if ($status == "APPROVED") {$stat = 'success';}
+		else if ($status == "ARRIVED") {$stat = 'info';}
 		else if($status == "DENIED") {$stat = 'danger';}
+		else if($status == "CANCELLED") {$stat = 'default';}
+		else if($status == "AUTO CANCELLED") {$stat = 'danger';}
 		?>
         <tr>
           <td><?php echo $idx++; ?></td>
@@ -77,7 +80,7 @@ if($type == 'admin') {
                 <i class="fa fa-edit"></i> Edit
               </a>
               
-			  <a href="javascript:deleteUser('<?php echo $user_id ?>');" class="btn btn-default btn-xs" title="Delete this appointment">
+			  <a href="javascript:deleteAppointment('<?php echo $user_id ?>');" class="btn btn-default btn-xs" title="Delete this appointment">
                 <i class="fa fa-trash"></i> Delete
               </a>
             </div>
@@ -117,8 +120,8 @@ function decline(userId) {
 	}
 }
 
-function deleteUser(userId) {
-	if(confirm('Deleting this record will also remove the appointment from calendar.\n\nAre you sure you want to proceed?')) {
+function deleteAppointment(userId) {
+	if(confirm('Delete this appointment?\n\nThe pet owner account will be preserved for future bookings.\n\nAre you sure you want to proceed?')) {
 		window.location.href = '<?php echo WEB_ROOT; ?>api/process.php?cmd=delete&userId='+userId;
 	}
 }
